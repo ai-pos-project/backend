@@ -48,30 +48,11 @@ import { auth } from "../../../../../utils/jwt.js";
 // };
 export const faceSignInHandler = {
   handle: async (
+    recognizedPhone: string
   ): Promise<FaceSignin.IFaceSigninResponse> => {
     
-    const modelRes = await axios.get(
-      `http://${process.env.FACE_MODEL_HOST}:${process.env.FACE_MODEL_PORT}/face/recognize_and_get_result`
-    );
-    // const modelRes = await fetch(
-    //   `http://${process.env.FACE_MODEL_HOST}:${process.env.FACE_MODEL_PORT}/face/recognize_and_get_result`,
-    //   {
-    //     method: "GET",
-    //     headers: { "Content-Type": "application/json" },
-    //   }
-    // );
-    if (modelRes.status !== 200) {
-      throw new Error(
-        `Face recognition service returned status ${modelRes.status}`
-      );
-    }
-    const recognizedName = modelRes.data.name;
-    if (recognizedName === "未知") {
-      throw new FaceNotRecognizedError();
-    }
-    console.log(recognizedName);
     
-    const result = await userService.faceSignIn(recognizedName);
+    const result = await userService.faceSignIn(recognizedPhone);
     const tokenInfo = await auth.generateAccessToken(result.id);
     const response = await faceSignInRes.customize(result,tokenInfo);
     return response;

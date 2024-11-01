@@ -27,11 +27,11 @@ export const userController = {
     res.status(200).json(response);
   },
   faceSignIn: async (req: Request, res: Response): Promise<void> => {
-    // const image = req.file; // 假設使用 multer 中間件來處理檔案上傳
-    // if (!image) {
-    //   throw new Error("No image uploaded");
-    // }
-    const response = await faceSignInHandler.handle();
+    const { recognizedPhone } = req.body;
+    if (!recognizedPhone) {
+      throw new InputEmptyError();
+    }
+    const response = await faceSignInHandler.handle(recognizedPhone);
     res.status(200).json(response);
   },
   signUp: async (req: Request, res: Response): Promise<void> => {
