@@ -1,19 +1,27 @@
-FROM node:20.4-alpine
+FROM node:20.4-alpine AS builder
 
 WORKDIR /app
 
 COPY . .
 
-
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup \ 
-    && npm ci \
+RUN npm ci \ 
     && npx tsc \
-    && npm ci --omit=dev --omit=optional \
     && npm cache clean --force
 
-RUN chown -R appuser:appgroup /app/dist
+    
+FROM node:20.4-alpine
 
-USER root
+WORKDIR /app
+
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/package*.json ./
+
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup \ 
+    && npm ci --omit=dev --omit=optional \
+    && npm cache clean --force \
+    && chown -R appuser:appgroup /app
+
+USER appuser
 
 EXPOSE 3000
 

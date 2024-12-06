@@ -17,18 +17,18 @@ services:
         - 3000:3000
   
 
-  nginx:
-    image: nginx
-    container_name: nginx
-    restart: always
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-    networks:
-      - beya_network
-    depends_on:
-      - beya_backend
+  # nginx:
+  #   image: nginx
+  #   container_name: nginx
+  #   restart: always
+  #   ports:
+  #     - "80:80"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/conf.d/default.conf
+  #   networks:
+  #     - beya_network
+  #   depends_on:
+  #     - beya_backend
 
 volumes:
   sqlite_data:
